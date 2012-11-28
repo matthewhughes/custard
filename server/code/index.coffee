@@ -36,7 +36,7 @@ authenticateProfile = (profile, password, done) ->
   console.warn "#{profile} #{password}"
   # Must the password be plaintext?
   options =
-    uri: 'http://boxecutor-dev-1.scraperwiki.net/passwd_auth/'
+    uri: 'https://boxecutor-dev-1.scraperwiki.net/passwd_auth/'
     form:
       profile: profile
       password: password
@@ -79,7 +79,7 @@ app.post "/login", passport.authenticate("local",
 app.get '/login', (req, resp) ->
   resp.render 'login'
 
-#app.all '*', ensureAuthenticated
+app.all '*', ensureAuthenticated
 
 # TODO: sort out nice way of serving templates
 app.get '/tpl/:page', (req, resp) ->
