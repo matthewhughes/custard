@@ -21,8 +21,14 @@ View = require('model/view')()
 Token = require('model/token')()
 Tool = require('model/tool')()
 
-# Set up database connection
-mongoose.connect process.env.CU_DB
+# Set up database connection, if we're testing use the test DB
+# TODO: factor into NODE_ENV settings file/use node-config
+if process.env.NODE_ENV is 'test'
+  console.log 'TESTING'
+  mongoose.connect process.env.CU_TEST_DB
+else
+  console.log 'NOT TESTING'
+  mongoose.connect process.env.CU_DB
 
 
 assets.jsCompilers.eco =
