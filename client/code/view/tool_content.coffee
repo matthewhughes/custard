@@ -18,7 +18,9 @@ class Cu.View.ToolContent extends Backbone.View
      remote: url
      container: 'fullscreen'
      onReady: ->
-       transport.postMessage 'Hello from custard!'
+       setTimeout ->
+         transport.postMessage 'Hello from custard!'
+       , 2000
      onMessage: (message, origin) ->
-       transport.postMessage "This is a message received from #{location}"
+       console.log "This is a message received from #{origin}: #{message}"
 
