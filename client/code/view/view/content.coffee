@@ -1,8 +1,9 @@
-class Cu.View.ToolContent extends Backbone.View
+class Cu.View.ViewContent extends Backbone.View
   id: 'fullscreen'
   boxUrl: window.boxServer
 
   initialize: ->
+    $('body').addClass('fullscreen')
     @settings (settings) =>
       frag = encodeURIComponent JSON.stringify(settings)
       @setupEasyXdm "#{@boxUrl}/#{@model.get 'box'}/#{settings.source.publishToken}/container.html##{frag}"
@@ -28,7 +29,11 @@ class Cu.View.ToolContent extends Backbone.View
               model.set 'displayName', name
               model.save()
 
-class Cu.View.AppContent extends Cu.View.ToolContent
+  close: ->
+    $('body').removeClass('fullscreen')
+    super()
+
+class Cu.View.AppContent extends Cu.View.ViewContent
   settings: (callback) ->
     @model.publishToken (publishToken) =>
       callback
@@ -38,7 +43,7 @@ class Cu.View.AppContent extends Cu.View.ToolContent
           publishToken: publishToken
           box: @model.get 'box'
 
-class Cu.View.PluginContent extends Cu.View.ToolContent
+class Cu.View.PluginContent extends Cu.View.ViewContent
   settings: (callback) ->
     @model.publishToken (viewToken) =>
       dataset = @model.get 'plugsInTo'

@@ -33,9 +33,15 @@ class Cu.View.ToolTile extends Backbone.View
     else if manifest.displayName.indexOf('Upload') == 0
       manifest.icon = '/image/tool-icon-spreadsheet-upload.png'
       manifest.color = '#029745'
+    else if manifest.displayName.indexOf('Download') == 0
+      manifest.icon = '/image/tool-icon-spreadsheet-upload.png'
+      manifest.color = '#029745'
     else if manifest.displayName.indexOf('Test') == 0
       manifest.icon = '/image/tool-icon-test.png'
       manifest.color = '#b0df18'
+    else if manifest.displayName.indexOf('table') > -1
+      manifest.icon = '/image/tool-icon-data-table.png'
+      manifest.color = '#f6b730'
     model.set 'manifest', manifest
 
   showLoading: ->
@@ -100,6 +106,8 @@ class Cu.View.PluginTile extends Cu.View.ToolTile
         dataset.installPlugin @model.get('name'), (err, view) =>
           console.warn 'Error', err if err?
           window.app.navigate "/dataset/#{dataset.id}/view/#{view.id}", trigger: true
+          $('#chooser').fadeOut 200, ->
+            $(this).remove()
       error: (model, xhr, options) ->
         @active = false
         @$el.removeClass 'loading'
