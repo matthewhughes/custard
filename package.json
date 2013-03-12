@@ -19,7 +19,8 @@
     "ident-express": "*",
     "uuid": "~1.4.0",
     "request": "~2.12",
-    "nodemailer": "~0.3.43"
+    "nodemailer": "~0.3.43",
+    "passport-http-bearer": "~0.2.1"
   },
   "scripts": {
     "install": "node_modules/coffee-script/bin/cake build",

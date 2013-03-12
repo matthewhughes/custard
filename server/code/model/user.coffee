@@ -94,6 +94,16 @@ class User extends ModelBase
       else
         callback null, null
 
+  @findByAPIKey: (apikey, callback) ->
+    @dbClass.findOne {apikey: apikey}, (err, user) =>
+      if err?
+        console.warn err
+        callback err, null
+      if user?
+        callback null, @makeModelFromMongo user
+      else
+        callback null, null
+
   # Add and email the user
   @add: (opts, callback) ->
     newUser =

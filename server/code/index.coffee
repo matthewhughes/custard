@@ -10,6 +10,7 @@ assets = require 'connect-assets'
 ejs = require 'ejs'
 passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
+BearerStrategy = require('passport-http-bearer').Strategy
 mongoose = require 'mongoose'
 mongoStore = require('connect-mongo')(express)
 flash = require 'connect-flash'
@@ -47,8 +48,11 @@ assets.jsCompilers.eco =
 
 app = express()
 
+
 ensureAuthenticated = (req, res, next) ->
   return next() if req.isAuthenticated()
+    passport.authenticate 'localapikey'
+
   res.redirect '/login'
 
 passport.serializeUser (user, done) ->
@@ -86,6 +90,16 @@ verify = (username, password, done) ->
     else
       done null, false, message: 'Incorrect username or password'
 
+bearerVerify = (apikey, callback) ->
+  User.findByAPIKey apikey
+  , (err, user) ->
+    return callback err if err
+    return callback(null, false) unless user?
+    sessionUser =
+      real: getSessionUser user
+      effective: getSessionUser user
+    callback null, user
+
 
 app.configure ->
   app.use express.bodyParser()
@@ -113,8 +127,9 @@ app.configure ->
   # Set the public folder as static assets
   app.use express.static(process.cwd() + '/shared')
 
-passport.use 'local', new LocalStrategy(verify)
+passport.use 'local', new LocalStrategy verify
 
+passport.use 'bearer', new BearerStrategy bearerVerify
 
 # Set View Engine
 app.set 'views', 'server/template'
