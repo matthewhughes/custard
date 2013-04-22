@@ -65,6 +65,20 @@ class Cu.View.ArchetypeMenuItem extends Backbone.View
       @$el.html html
     @
 
+  showLoading: ->
+    $inner = @$el.find('.tool-icon-inner')
+    $inner.empty().css('background-image', 'none')
+    Spinners.create($inner, {
+      radius: 7,
+      height: 8,
+      width: 2.5,
+      dashes: 12,
+      opacity: 1,
+      padding: 3,
+      rotation: 1000,
+      color: '#fff'
+    }).play()
+
   clicked: (e) ->
     e.stopPropagation()
     @install(e) unless @active

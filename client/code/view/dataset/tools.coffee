@@ -11,8 +11,10 @@ class Cu.View.DatasetTools extends Backbone.View
 
     @toolInstances = @model.get('views').visible()
     app.tools().on 'add', @addToolArchetype, @
-    @model.on 'update:tool', @addToolInstance, @
-    @model.get('views').on 'update:tool', @addToolInstance, @
+    @model.on 'relational:change:tool', @addToolInstance, @
+    @model.on 'all', (e) ->
+      console.log e
+    @model.get('views').on 'change:tool', @addToolInstance, @
 
   render: ->
     @$el.html """<ul class="tools"></ul>
@@ -32,6 +34,7 @@ class Cu.View.DatasetTools extends Backbone.View
     # The setTimeout thing is because we can't work out Backbone (Relational) model loading:
     # without the setTimeout, instance.get('tool') is undefined.
     setTimeout =>
+      console.log toolModel
       if toolModel.isBasic()
         item = $("[data-toolname=#{toolModel.get 'name'}]", @$el)
         if item.length > 0
@@ -40,7 +43,8 @@ class Cu.View.DatasetTools extends Backbone.View
         $('.archetypes', @$el).append v.render().el
     , 0
 
-  addToolInstance: (instance) ->
+  addToolInstance: (instance, b, c) ->
+    console.log b,c
     id = "instance-#{instance.get 'box'}"
     l = $("##{id}", @$el)
     if not instance.isVisible()

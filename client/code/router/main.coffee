@@ -85,28 +85,31 @@ class Cu.Router.Main extends Backbone.Router
 
   dataset: (box) ->
     doNotNavigate = false
+    views = null
     render = =>
+      console.log 'VEWS', views
       views.findByToolName 'datatables-view-tool', (dataTablesView) =>
         alert 'NULL DT' unless dataTablesView
         subnavView = new Cu.View.DatasetNav {model: model, view: dataTablesView}
         @subnavView.showView subnavView
         contentView = new Cu.View.PluginContent {model: dataTablesView}
         @appView.showView contentView
-        doNotNavigate = false
 
     model = Cu.Model.Dataset.findOrCreate box: box, merge: true
+    model.on 'all', (e) ->
+      console.log "ALL", e
     toolsDone = app.tools().fetch()
     modelDone = model.fetch()
     viewsDone = model.fetchRelated 'views'
-    $.when.apply( null, _.union(viewsDone, modelDone, toolsDone) ).done =>
-      console.log 'all done'
+    $.when.apply( null, [viewsDone, modelDone, toolsDone] ).done =>
+      console.log 'all done', model.get('views').visible()
       views = model.get 'views'
       subnavView = new Cu.View.DatasetNav {model: model}
       @subnavView.showView subnavView
       if dataTablesView?
         render()
       else
-        views.once 'update:tool', =>
+        views.once 'relational:change:tool', =>
           doNotNavigate = true
           render()
         setTimeout ->
